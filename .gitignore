@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# OS-specific files
+.DS_Store
+
+# Environment variables
+.env
