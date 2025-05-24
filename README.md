@@ -33,7 +33,7 @@ An AI-powered fake news detection app built with modern web technologies. Users 
 
 ## 📸 App Preview
 
-> ![App Preview](public/screenshot.png)
+> ![App Preview](public/who-said-that.png)
 
 ---
 
