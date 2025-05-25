@@ -42,8 +42,8 @@ An AI-powered fake news detection app built with modern web technologies. Users 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/who-said-that-new.git
-cd who-said-that-new
+git clone https://github.com/YOUR_USERNAME/WHO-SAID-THAT.git
+cd WHO-SAID-THAT
 ```
 
 ### 2. Install dependencies
