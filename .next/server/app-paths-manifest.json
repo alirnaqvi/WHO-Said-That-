@@ -1,0 +1,7 @@
+{
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/result/fake/page": "app/result/fake/page.js",
+  "/result/verified/page": "app/result/verified/page.js",
+  "/verify/page": "app/verify/page.js"
+}
