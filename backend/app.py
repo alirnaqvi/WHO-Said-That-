@@ -1,9 +1,23 @@
-# backend/app.py
-# ---------------------------------------------------------
-# Universal COVID-19 fake-news API
-# – Works with *either* a linear model (SVM / Logistic Reg.)
-#   or a Naïve-Bayes model (MultinomialNB/BernoulliNB)
-# ---------------------------------------------------------
+"""
+backend/app.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A tiny Flask server that loads a pickled TF-IDF+classifier pipeline*
+and exposes a single POST endpoint `/api/verify`.
+
+Send it a JSON payload like `{ "text": "your claim here" }` and it will
+reply with:
+
+```json
+{
+  "label": "real" | "fake",     # the prediction
+  "confidence": 0.93,            # nice human friendly 0-1 score
+  "why": "Key words: …"          # top tokens that swayed the model
+}
+```
+
+The code works for *both* linear models (LogReg / SVM) **and** Naïve‑Bayes
+family models because we check which attributes the classifier provides.
+"""
 
 from pathlib import Path
 
@@ -12,42 +26,48 @@ from flask_cors import CORS
 import joblib
 import numpy as np
 
-# ------------------------------------------------------------------
-# 1.  Load trained pipeline
-# ------------------------------------------------------------------
-MODEL_PATH = Path("covid_fake_news_nb.pkl")  # ⇦ put your *.pkl here
-pipe = joblib.load(MODEL_PATH)               # Pipeline(tfidf , clf)
+# 1. Load the trained pipeline (.pkl)
+
+MODEL_PATH = Path("covid_fake_news_nb.pkl")
+pipe = joblib.load(MODEL_PATH) 
+
+# 2. Spin up the Flask app and enable CORS so the Next.js front‑end running
+#    on http://localhost:3000 can talk to us without browser complaints.
 
 app = Flask(__name__)
-CORS(app)  # allow http://localhost:3000 (Next.js) to call us
+CORS(app)
 
-# ------------------------------------------------------------------
-# 2.  Utility: explain in lay-language the top-influential tokens
-# ------------------------------------------------------------------
+# 3. Helper – pull out the 4 most influential tokens so users get a clue
+#    *why* the model said "fake" / "real".
+
 def layman_reason(text: str, top_k: int = 4) -> str:
-    """Return the K tokens that contributed most to the prediction."""
-    tfidf = pipe.named_steps["tfidf"]
-    clf   = pipe.named_steps["clf"]
+    """Return a comma separated string with the `top_k` tokens that had
+    the biggest absolute impact on this particular prediction."""
 
-    # --- get a per-token weight vector --------------------------------
-    if hasattr(clf, "coef_"):                      # linear SVM / LogReg
+    tfidf = pipe.named_steps["tfidf"]
+    clf = pipe.named_steps["clf"]
+
+    # Weight vector depends on model family
+    if hasattr(clf, "coef_"):  # linear SVM / Logistic Regression
         coef = clf.coef_.ravel()
-    elif hasattr(clf, "feature_log_prob_"):        # MultinomialNB, etc.
-        # difference between log-prob for class 1 vs class 0
+    elif hasattr(clf, "feature_log_prob_"):  # MultinomialNB, BernoulliNB …
         coef = clf.feature_log_prob_[1] - clf.feature_log_prob_[0]
     else:
-        return "N/A"
+        return "N/A"  # something exotic we didn't account for
 
-    row   = tfidf.transform([text])
-    idxs  = row.nonzero()[1]
-    pairs = [(tfidf.get_feature_names_out()[j], row[0, j] * coef[j]) for j in idxs]
+    row = tfidf.transform([text])
+    idxs = row.nonzero()[1]
+    pairs = [(
+        tfidf.get_feature_names_out()[j],
+        row[0, j] * coef[j]
+    ) for j in idxs]
     pairs.sort(key=lambda x: abs(x[1]), reverse=True)
-    words = [tok for tok, _ in pairs[:top_k]]
+
+    words = [token for token, _ in pairs[:top_k]]
     return ", ".join(words) if words else "N/A"
 
-# ------------------------------------------------------------------
-# 3.  API endpoint
-# ------------------------------------------------------------------
+# 4. Main prediction endpoint
+
 @app.route("/api/verify", methods=["POST"])
 def verify():
     data = request.get_json(silent=True) or {}
@@ -55,32 +75,35 @@ def verify():
     if not text:
         return jsonify({"error": "No text provided"}), 400
 
-    label = pipe.predict([text])[0]                      # 'fake' / 'real'
+    # prediction 
+    label = pipe.predict([text])[0]  # 'fake' or 'real'
 
-    # --- confidence ---------------------------------------------------
-    if hasattr(pipe, "decision_function"):
-        margin = float(pipe.decision_function([text])[0])
-    else:  # NB, etc. → use log-probability of predicted class
-        probs  = pipe.predict_log_proba([text])[0]
-        cls_id = pipe.classes_.tolist().index(label)
-        margin = float(probs[cls_id])
+    # convert raw model output into a friendly 0‑1 confidence
+    tfidf_row = pipe.named_steps["tfidf"].transform([text])
+    clf = pipe.named_steps["clf"]
+
+    if hasattr(clf, "decision_function"):
+        margin = float(clf.decision_function(tfidf_row)[0])
+        prob = 1 / (1 + np.exp(-margin))  # sigmoid → 0‒1
+    else:  # Naïve‑Bayes
+        log_probs = clf.predict_log_proba(tfidf_row)[0]
+        prob = float(np.exp(log_probs.max()))  # highest class prob
+        margin = float(log_probs[1] - log_probs[0])  # still handy for debug
 
     return jsonify(
-        label = label,
-        score = margin,                      # margin (>0 real, <0 fake) or log-prob
-        why   = f"Key words: {layman_reason(text)}"
+        label=label,
+        confidence=prob,
+        why=f"Key words: {layman_reason(text)}"
     )
 
-# ------------------------------------------------------------------
-# 4.  Simple health-check
-# ------------------------------------------------------------------
+# 5. Tiny health‑check so you can open http://127.0.0.1:5000 in the browser
+
 @app.route("/")
 def home():
     return "Fake-News API up!"
 
-# ------------------------------------------------------------------
-# 5.  Run (dev mode)
-# ------------------------------------------------------------------
+# 6. Dev server entry point
+
 if __name__ == "__main__":
-    # accessible from browser on http://127.0.0.1:5000  (and LAN address)
+    # 0.0.0.0 → visible on LAN; remove that if you only want localhost.
     app.run(host="0.0.0.0", port=5000, debug=True)

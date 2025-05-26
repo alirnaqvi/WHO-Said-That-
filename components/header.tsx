@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { LightbulbIcon } from "lucide-react"
+import { LightbulbIcon } from 'lucide-react'
 
 export default function Header() {
   return (
@@ -7,10 +7,10 @@ export default function Header() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center">
           <div className="flex flex-col items-start gap-1">
-            <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
               <h1 className="text-3xl font-heading text-primary">WHO Said That?</h1>
               <LightbulbIcon className="h-6 w-6 text-yellow-500" />
-            </div>
+            </Link>
             <p className="text-gray-600 font-subtext text-lg">Don&apos;t let fake news go viral!</p>
           </div>
 

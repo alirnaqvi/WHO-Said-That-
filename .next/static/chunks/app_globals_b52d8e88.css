@@ -1366,6 +1366,11 @@ body {
   background-color: hsl(var(--foreground));
 }
 
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+}
+
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
@@ -1666,6 +1671,11 @@ body {
 
 .tracking-widest {
   letter-spacing: .1em;
+}
+
+.text-\[\#3BB4E5\] {
+  --tw-text-opacity: 1;
+  color: rgb(59 180 229 / var(--tw-text-opacity, 1));
 }
 
 .text-current {
@@ -2056,6 +2066,10 @@ body {
 
 .hover\:opacity-100:hover {
   opacity: 1;
+}
+
+.hover\:opacity-80:hover {
+  opacity: .8;
 }
 
 .hover\:shadow-\[0_0_0_1px_hsl\(var\(--sidebar-accent\)\)\]:hover {
