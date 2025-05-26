@@ -156,17 +156,6 @@ def verify():
 
 ---
 
-## 📦 Production Build
-
-```
-npm run build
-npm run start
-```
-
-- Be sure your backend is running before starting the frontend.
-
----
-
 ## 🔐 .gitignore
 
 ```
