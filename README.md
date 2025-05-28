@@ -67,7 +67,7 @@ WHO-SAID-THAT/
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/YOUR_USERNAME/WHO-SAID-THAT.git
+git clone https://github.com/Qurat-ul-ainFatima/WHO-SAID-THAT.git
 cd WHO-SAID-THAT
 ```
 
