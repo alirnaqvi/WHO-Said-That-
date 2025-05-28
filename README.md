@@ -67,8 +67,8 @@ WHO-SAID-THAT/
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/Qurat-ul-ainFatima/WHO-SAID-THAT.git
-cd WHO-SAID-THAT
+git clone https://github.com/alirnaqvi/WHO-Said-That-.git
+cd WHO-Said-That-
 ```
 
 ### 2. Install frontend dependencies
@@ -82,7 +82,7 @@ npm install
 > Run this in a **separate terminal**:
 
 ```
-cd WHO-SAID-THAT
+cd WHO-Said-That-
 cd backend
 python app.py
 ```
@@ -188,6 +188,3 @@ You can explore the complete notebook for:
 
 ---
 
-## 📄 License
-
-MIT © Qurat-ul-ain — 2025
