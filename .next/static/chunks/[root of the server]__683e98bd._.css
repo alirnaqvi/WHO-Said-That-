@@ -2583,11 +2583,6 @@ body {
   background-color: hsl(var(--foreground));
 }
 
-.bg-gray-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
-}
-
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
@@ -2624,6 +2619,11 @@ body {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+
+.bg-gray-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
 }
 
 .bg-opacity-90 {
@@ -2890,11 +2890,6 @@ body {
   letter-spacing: .1em;
 }
 
-.text-\[\#3BB4E5\] {
-  --tw-text-opacity: 1;
-  color: rgb(59 180 229 / var(--tw-text-opacity, 1));
-}
-
 .text-current {
   color: currentColor;
 }
@@ -2944,6 +2939,11 @@ body {
 .text-yellow-500 {
   --tw-text-opacity: 1;
   color: rgb(234 179 8 / var(--tw-text-opacity, 1));
+}
+
+.text-\[\#3BB4E5\] {
+  --tw-text-opacity: 1;
+  color: rgb(59 180 229 / var(--tw-text-opacity, 1));
 }
 
 .underline-offset-4 {

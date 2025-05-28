@@ -18,9 +18,10 @@ export default function FakeResult() {
           </div>
 
           <h2 className="text-2xl font-heading text-red-600 mb-2">Fake News Alert!</h2>
-          <p className="text-gray-700 mb-6 font-subtext text-lg">
+          <p className="text-gray-700 font-subtext text-lg">
             This statement contains misleading or false information.
           </p>
+          <p className="text-gray-600 mb-6 font-subtext">WHO Said That? can make mistakes. Consider checking important info.</p>
 
           <Link href="/verify">
             <Button className="bg-[#3BB4E5] hover:bg-[#2A9FD0] text-white font-heading">Check Another Statement</Button>
